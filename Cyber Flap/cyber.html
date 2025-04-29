@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CyberFlap - Gigio Bird Adventure</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="cyber.css">
+    <script src="cyber.js"></script>
+  </head>
+  <body
+    class="flex items-center justify-center min-h-screen bg-gray-900 text-white"
+  >
+    <div class="relative w-all max-w-2xl mx-auto">
+      <div class="relative rounded-lg overflow-hidden neon-border">
+        <div class="scanline"></div>
+
+        <canvas
+          id="gameCanvas"
+          width="400"
+          height="600"
+          class="w-full h-full"
+        ></canvas>
+
+        <div
+          id="startScreen"
+          class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70"
+        >
+          <h1 class="text-4xl md:text-5xl font-bold mb-4 neon-text glow">
+            CYBER<span class="text-purple-400">FLAP</span>
+          </h1>
+          <p class="mb-8 text-lg text-cyan-300">Gigio Bird Adventure</p>
+          <button
+            id="startButton"
+            class="cyber-button px-8 py-3 rounded-full font-bold text-white pixel-font"
+          >
+            <i class="fas fa-play mr-2"></i> INICIE O JOGO
+          </button>
+          <div class="mt-8 text-xs text-gray-400">
+            <p>Pressione ESPAÇO ou CLICK com o mouse.</p>
+            <p class="mt-2">Evite os cones de NEON.</p>
+          </div>
+        </div>
+
+        <div
+          id="gameOverScreen"
+          class="absolute inset-0 hidden flex-col items-center justify-center bg-black bg-opacity-80"
+        >
+          <h2 class="text-3xl mt-4 mx-8 font-bold mb-4 text-red-400 neon-text">
+            FIM DE JOGO
+          </h2>
+          <p class="text-xl mx-8 mb-2">
+            Seus pontos: <span id="finalScore" class="text-yellow-300">0</span>
+          </p>
+          <p class="text-sm mx-8 mb-6 text-gray-400">
+            Total de pontos:
+            <span id="highScore" class="text-green-300">0</span>
+          </p>
+          <button
+            id="restartButton"
+            class="cyber-button mt-24 mx-[100px] px-6 py-2 rounded-full font-bold text-white pixel-font"
+          >
+            <i class="fas fa-redo mr-2"></i> Tente Novamente
+          </button>
+        </div>
+
+        <div id="scoreDisplay" class="absolute top-4 left-4 hidden">
+          <div class="bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+            <p class="text-white font-bold">
+              Pontos: <span id="currentScore" class="text-yellow-300">0</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 text-center text-sm text-gray-400">
+        <p>Versão CyberPunk do game clássico Flap Bird.</p>
+        <p class="mt-1">
+          Feito com <i class="fas fa-heart text-red-500"></i> NEON Lovers
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

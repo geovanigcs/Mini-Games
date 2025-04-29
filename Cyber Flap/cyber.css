@@ -1,0 +1,72 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap");
+
+body {
+  font-family: "Orbitron", sans-serif;
+  overflow: hidden;
+  background-color: #0a0a1a;
+}
+
+#gameCanvas {
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  box-shadow: 0 0 30px rgba(106, 90, 205, 0.5);
+}
+
+.neon-text {
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6;
+}
+
+.neon-border {
+  box-shadow: 0 0 10px #4d00ff, 0 0 20px #4d00ff, inset 0 0 10px #4d00ff;
+}
+
+.pixel-font {
+  font-family: "Press Start 2P", cursive;
+}
+
+.cyber-button {
+  background: linear-gradient(45deg, #4d00ff, #8a2be2);
+  transition: all 0.3s;
+}
+
+.cyber-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px #4d00ff;
+}
+
+.glow {
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0073e6, 0 0 20px #0073e6;
+  }
+  to {
+    box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0073e6, 0 0 40px #0073e6;
+  }
+}
+
+.scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(0, 255, 255, 0.1) 0%,
+    rgba(0, 255, 255, 0) 10%
+  );
+  background-size: 100% 5px;
+  pointer-events: none;
+  animation: scanline 8s linear infinite;
+  z-index: 10;
+}
+
+@keyframes scanline {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
