@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id         String   @id @default(uuid())
+  nome       String
+  nickname   String   @unique
+  email      String   @unique
+  senha      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Password Reset Fields
+  reset_token        String?   // Token for password reset
+  reset_token_expiry DateTime? // Expiry time for reset token
+  
+  // RPG Fields
+  nivel_usuario      Int      @default(1)
+  experiencia_total  Int      @default(0)
+  conquistas         String?  // JSON string of achievement IDs
+  preferencias       Json?    // User preferences (theme, language, etc.)
+  ultimo_login       DateTime?
+  
+  // Relationships
+  characters Character[]
+  
+  @@map("usuarios")
+}
+
+model Character {
+  id            String   @id @default(uuid())
+  userId        String
+  nome          String
+  apelido       String?
+  raca          String
+  classe        String
+  forca         Int
+  destreza      Int
+  constituicao  Int
+  inteligencia  Int
+  sabedoria     Int
+  carisma       Int
+  idade         Int
+  altura        Int
+  peso          Int
+  corOlhos      String
+  corCabelo     String
+  corPele       String
+  estilo        String
+  alinhamento   String
+  origem        String
+  motivacao     String
+  traumas       String
+  inimigos      String
+  segredo       String
+  armas         String
+  armadura      String
+  itensEspeciais String
+  proficiencias String
+  magias        String
+  poderes       String
+  idiomas       String
+  conhecimentos String
+  personalidade String
+  tracos        String
+  ideais        String
+  vinculos      String
+  defeitos      String
+  nivel         Int      @default(1)
+  experiencia   Int      @default(0)
+  
+  // Health and Resources
+  pontos_vida_atuais  Int @default(0)
+  pontos_vida_maximos Int @default(0)
+  
+  // Currency
+  dinheiro_cobre  Int @default(0)
+  dinheiro_prata  Int @default(0) 
+  dinheiro_ouro   Int @default(0)
+  
+  // Character Image
+  imagem_url      String?  // URL da imagem do personagem
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User      @relation(fields: [userId], references: [id])
+
+  @@map("personagens")
+}
+
+model Race {
+  id              String   @id // human, elf, dwarf, etc.
+  nome            String
+  descricao       String
+  emoji           String
+  habilidades_especiais String  // JSON string of special racial abilities
+  
+  // Physical characteristics
+  altura_media_cm   Int
+  peso_medio_kg     Int
+  expectativa_vida  Int
+  
+  // Attribute bonuses/penalties
+  bonus_forca       Int @default(0)
+  bonus_destreza    Int @default(0)
+  bonus_constituicao Int @default(0)
+  bonus_inteligencia Int @default(0)
+  bonus_sabedoria   Int @default(0)
+  bonus_carisma     Int @default(0)
+  
+  criado_em    DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+  
+  @@map("racas")
+}
+
+model CharacterClass {
+  id               String   @id // warrior, wizard, rogue, etc.
+  nome             String
+  descricao        String
+  emoji            String
+  icone_nome       String   // Icon name for UI
+  
+  // Mechanical properties
+  atributo_principal String  // Primary attribute
+  dado_vida         Int      // Hit die (d4, d6, d8, d10, d12)
+  habilidades_iniciais String // JSON string of starting skills
+  
+  // Class features
+  tipo_armadura     String?  // Armor type proficiency
+  armas_permitidas  String?  // JSON string of weapon proficiencies
+  escolas_magia     String?  // JSON string of magic schools (if applicable)
+  
+  criado_em    DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+  
+  @@map("classes_personagem")
+}
