@@ -1,9 +1,0 @@
-// Adicionar informações de debug temporário no final do arquivo
-                <div className="mt-8 p-4 bg-stone-800/40 border border-amber-600/30 rounded-xl text-amber-200">
-                  <h4 className="font-bold text-amber-300 mb-2">🧪 Dados de Teste</h4>
-                  <div className="text-sm space-y-1">
-                    <div><strong>Email:</strong> teste@rpg.com</div>
-                    <div><strong>Senha:</strong> 123456</div>
-                    <div className="text-xs text-stone-400 mt-2">Use essas credenciais para testar o login</div>
-                  </div>
-                </div>

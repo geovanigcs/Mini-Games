@@ -14,22 +14,14 @@ const resetPasswordSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔄 Solicitação de redefinição de senha recebida');
-    
     const body = await request.json();
-    console.log('📨 Dados recebidos:', { token: body.token ? '***' : 'não informado' });
-    
-    // Validar dados de entrada
     const validatedData = resetPasswordSchema.parse(body);
-    console.log('✅ Dados validados com sucesso');
     
-    // Buscar usuário pelo token
-    console.log('🔍 Buscando usuário pelo token...');
     const user = await prisma.user.findFirst({
       where: {
         reset_token: validatedData.token,
         reset_token_expiry: {
-          gte: new Date(), // Token ainda válido
+          gte: new Date(),
         },
       },
       select: {
@@ -40,21 +32,14 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      console.log('❌ Token inválido ou expirado');
       return NextResponse.json(
         { error: 'Token inválido ou expirado. Solicite uma nova redefinição de senha.' },
         { status: 400 }
       );
     }
-    
-    console.log('👤 Usuário encontrado:', { id: user.id, nome: user.nome });
 
-    // Hash da nova senha
-    console.log('🔐 Gerando hash da nova senha...');
     const hashedPassword = await hashPassword(validatedData.newPassword);
 
-    // Atualizar senha e limpar token
-    console.log('💾 Atualizando senha no banco...');
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -65,22 +50,18 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    console.log('✅ Senha redefinida com sucesso!');
-
     return NextResponse.json({
       message: `🎉 Senha redefinida com sucesso, ${user.nome}! Agora você pode fazer login com sua nova senha.`
     });
 
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log('❌ Erro de validação:', error.issues[0].message);
       return NextResponse.json(
         { error: error.issues[0].message },
         { status: 400 }
       );
     }
 
-    console.error('❌ Erro na redefinição de senha:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

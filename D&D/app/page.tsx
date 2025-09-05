@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import AdventureIntro from '@/components/AdventureIntro'
 import FloatingParticles from '@/components/FloatingParticles'
@@ -13,7 +13,6 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Form states
   const [loginForm, setLoginForm] = useState({
     emailOrNickname: '',
     senha: ''
@@ -32,12 +31,7 @@ export default function HomePage() {
     setIsLoading(true)
     setError(null)
 
-    console.log('🔍 Frontend: Iniciando login...');
-    console.log('📨 Dados do formulário:', { emailOrNickname: loginForm.emailOrNickname, senha: '***' });
-
     try {
-      console.log('📡 Fazendo requisição para /api/auth/login');
-      
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: {
@@ -45,31 +39,22 @@ export default function HomePage() {
         },
         body: JSON.stringify(loginForm)
       })
-
-      console.log('🔄 Resposta recebida:', response.status, response.statusText);
       
       const data = await response.json()
-      console.log('📥 Dados da resposta:', data);
 
       if (response.ok) {
-        console.log('✅ Login bem-sucedido!');
         setUser(data.user)
         localStorage.setItem('token', data.token)
         
-        // Se tem personagens, vai para seleção, senão vai para criação
         if (data.user.characters && data.user.characters.length > 0) {
-          console.log('🎭 Usuário tem personagens, indo para seleção...');
           setCurrentView('select')
         } else {
-          console.log('🆕 Usuário sem personagens, indo para criação...');
           setCurrentView('character')
         }
       } else {
-        console.log('❌ Erro na resposta:', data.error);
         setError(data.error || 'Erro no login')
       }
     } catch (err) {
-      console.error('❌ Erro de conexão:', err);
       setError('Erro de conexão. Tente novamente.')
     }
 
@@ -106,7 +91,7 @@ export default function HomePage() {
       if (response.ok) {
         setUser(data.user)
         localStorage.setItem('token', data.token)
-        setCurrentView('character') // Vai direto para criação de personagem
+        setCurrentView('character')
       } else {
         setError(data.error || 'Erro no cadastro')
       }
@@ -118,26 +103,21 @@ export default function HomePage() {
   }
 
   const handleCharacterCreated = (character: any) => {
-    console.log('✅ Personagem criado:', character);
-    // Atualizar a lista de personagens do usuário
     if (user) {
       setUser((prev: any) => ({
         ...prev,
         characters: [...(prev.characters || []), character]
       }));
     }
-    // Ir para seleção de personagem
     setCurrentView('select');
   };
 
   return (
     <>
-      {/* Background with particles */}
       <div className="fixed inset-0 middle-earth-bg">
         <FloatingParticles />
       </div>
 
-      {/* Main Content */}
       <main className="relative z-10 min-h-screen">
         <AnimatePresence mode="wait">
           {currentView === 'intro' && (
@@ -225,7 +205,6 @@ export default function HomePage() {
                   </div>
                 </form>
                 
-                {/* Informações de Teste */}
                 <div className="mt-8 p-4 bg-stone-800/40 border border-amber-600/30 rounded-xl text-amber-200">
                   <h4 className="font-bold text-amber-300 mb-2">🧪 Dados de Teste</h4>
                   <div className="text-sm space-y-1">
@@ -363,8 +342,7 @@ export default function HomePage() {
                 onBack={() => setCurrentView('login')}
                 onCreateNew={() => setCurrentView('character')}
                 onSelectCharacter={(character) => {
-                  console.log('Personagem selecionado:', character);
-                  // TODO: Ir para o jogo
+                  // TODO: Implementar seleção de personagem
                 }}
                 user={user}
               />
@@ -381,7 +359,6 @@ export default function HomePage() {
             >
               <CharacterCreationDynamic 
                 onBack={() => {
-                  // Voltar para seleção se tem personagens, senão para login
                   if (user.characters && user.characters.length > 0) {
                     setCurrentView('select');
                   } else {

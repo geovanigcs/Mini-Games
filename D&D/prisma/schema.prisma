@@ -23,14 +23,12 @@ model User {
   reset_token        String?   // Token for password reset
   reset_token_expiry DateTime? // Expiry time for reset token
   
-  // RPG Fields
   nivel_usuario      Int      @default(1)
   experiencia_total  Int      @default(0)
   conquistas         String?  // JSON string of achievement IDs
   preferencias       Json?    // User preferences (theme, language, etc.)
   ultimo_login       DateTime?
   
-  // Relationships
   characters Character[]
   
   @@map("usuarios")
@@ -78,18 +76,15 @@ model Character {
   nivel         Int      @default(1)
   experiencia   Int      @default(0)
   
-  // Health and Resources
   pontos_vida_atuais  Int @default(0)
   pontos_vida_maximos Int @default(0)
   
-  // Currency
   dinheiro_cobre  Int @default(0)
   dinheiro_prata  Int @default(0) 
   dinheiro_ouro   Int @default(0)
   
-  // Character Image
-  imagem_url      String?  // URL da imagem do personagem
-  
+  imagem_url      String?  
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User      @relation(fields: [userId], references: [id])
@@ -104,12 +99,10 @@ model Race {
   emoji           String
   habilidades_especiais String  // JSON string of special racial abilities
   
-  // Physical characteristics
   altura_media_cm   Int
   peso_medio_kg     Int
   expectativa_vida  Int
   
-  // Attribute bonuses/penalties
   bonus_forca       Int @default(0)
   bonus_destreza    Int @default(0)
   bonus_constituicao Int @default(0)
@@ -124,21 +117,19 @@ model Race {
 }
 
 model CharacterClass {
-  id               String   @id // warrior, wizard, rogue, etc.
+  id               String   @id 
   nome             String
   descricao        String
   emoji            String
-  icone_nome       String   // Icon name for UI
+  icone_nome       String   
   
-  // Mechanical properties
-  atributo_principal String  // Primary attribute
-  dado_vida         Int      // Hit die (d4, d6, d8, d10, d12)
-  habilidades_iniciais String // JSON string of starting skills
+  atributo_principal String  
+  dado_vida         Int      
+  habilidades_iniciais String 
   
-  // Class features
-  tipo_armadura     String?  // Armor type proficiency
-  armas_permitidas  String?  // JSON string of weapon proficiencies
-  escolas_magia     String?  // JSON string of magic schools (if applicable)
+  tipo_armadura     String?  
+  armas_permitidas  String?  
+  escolas_magia     String?  
   
   criado_em    DateTime @default(now())
   atualizado_em DateTime @updatedAt
