@@ -1,4 +1,4 @@
-// File: /home/geovani/Documentos/Gigio/D&D/app/layout.tsx
+// File: /home/geovani/Documentos/Gigio/Mini-Games/D&D/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

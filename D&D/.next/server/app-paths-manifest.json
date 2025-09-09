@@ -1,3 +1,13 @@
 {
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/forgot-password/route": "app/api/auth/forgot-password/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/auth/register/route": "app/api/auth/register/route.js",
+  "/api/characters/route": "app/api/characters/route.js",
+  "/api/auth/reset-password/route": "app/api/auth/reset-password/route.js",
+  "/api/characters/update-image/route": "app/api/characters/update-image/route.js",
+  "/api/classes/route": "app/api/classes/route.js",
+  "/api/races/route": "app/api/races/route.js",
+  "/page": "app/page.js",
+  "/reset-password/page": "app/reset-password/page.js"
 }

@@ -14,10 +14,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validar dados de entrada
     const validatedData = registerSchema.parse(body);
     
-    // Verificar se usuário já existe
     const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email }
     });
@@ -29,7 +27,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se nickname já existe
     const existingNickname = await prisma.user.findFirst({
       where: { nickname: validatedData.nickname }
     });
@@ -41,10 +38,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash da senha
     const hashedPassword = await hashPassword(validatedData.senha);
 
-    // Criar usuário
     const user = await prisma.user.create({
       data: {
         nome: validatedData.nome,
@@ -64,7 +59,6 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Gerar token JWT
     const token = generateToken(user.id);
 
     return NextResponse.json({

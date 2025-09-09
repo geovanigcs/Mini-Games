@@ -1,5 +1,3 @@
-// 🏔️ Middle Earth RPG - Type Definitions
-
 export interface User {
   id: string
   username: string
@@ -24,12 +22,12 @@ export interface Character {
 }
 
 export interface CharacterAttributes {
-  strength: number      // 💪 Physical power for melee combat
-  agility: number       // 🏃 Speed, dexterity, and ranged accuracy  
-  intelligence: number  // 🧠 Magical power and mana pool
-  wisdom: number        // 🔮 Magical defense and perception
-  luck: number         // 🍀 Critical hit chance and rare loot
-  resistance: number   // 🛡️ Physical and magical defense
+  strength: number
+  agility: number
+  intelligence: number
+  wisdom: number
+  luck: number
+  resistance: number
 }
 
 export interface CharacterRace {
@@ -139,4 +137,14 @@ export interface CreateCharacterRequest {
   raceId: string
   classId: string
   userId: string
+}
+
+export interface ForgotPasswordRequest {
+  emailOrNickname: string
+}
+
+export interface ResetPasswordRequest {
+  token: string
+  newPassword: string
+  confirmPassword: string
 }

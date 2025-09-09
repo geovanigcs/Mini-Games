@@ -8,10 +8,11 @@ import CharacterCreationDynamic from '@/components/CharacterCreationDynamic'
 import CharacterSelect from '@/components/CharacterSelect'
 
 export default function HomePage() {
-  const [currentView, setCurrentView] = useState<'intro' | 'login' | 'register' | 'character' | 'select'>('intro')
+  const [currentView, setCurrentView] = useState<'intro' | 'login' | 'register' | 'character' | 'select' | 'forgot-password'>('intro')
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const [loginForm, setLoginForm] = useState({
     emailOrNickname: '',
@@ -24,6 +25,10 @@ export default function HomePage() {
     email: '',
     senha: '',
     confirmarSenha: ''
+  })
+
+  const [forgotPasswordForm, setForgotPasswordForm] = useState({
+    emailOrNickname: ''
   })
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -94,6 +99,36 @@ export default function HomePage() {
         setCurrentView('character')
       } else {
         setError(data.error || 'Erro no cadastro')
+      }
+    } catch (err) {
+      setError('Erro de conexão. Tente novamente.')
+    }
+
+    setIsLoading(false)
+  }
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    setSuccessMessage(null)
+
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(forgotPasswordForm)
+      })
+      
+      const data = await response.json()
+
+      if (response.ok) {
+        setSuccessMessage(data.message)
+        setForgotPasswordForm({ emailOrNickname: '' })
+      } else {
+        setError(data.error || 'Erro ao solicitar redefinição de senha')
       }
     } catch (err) {
       setError('Erro de conexão. Tente novamente.')
@@ -194,13 +229,20 @@ export default function HomePage() {
                     {isLoading ? 'Entrando...' : 'Entrar no Reino'}
                   </motion.button>
                   
-                  <div className="text-center">
+                  <div className="text-center space-y-2">
                     <button
                       type="button"
                       onClick={() => setCurrentView('register')}
-                      className="text-amber-400 hover:text-amber-300 underline transition-colors"
+                      className="block w-full text-amber-400 hover:text-amber-300 underline transition-colors"
                     >
                       Criar Nova Conta
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentView('forgot-password')}
+                      className="block w-full text-stone-400 hover:text-stone-300 text-sm transition-colors"
+                    >
+                      Esqueci minha senha
                     </button>
                   </div>
                 </form>
@@ -330,6 +372,87 @@ export default function HomePage() {
             </motion.div>
           )}
 
+          {currentView === 'forgot-password' && (
+            <motion.div
+              key="forgot-password"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              transition={{ duration: 0.8 }}
+              className="min-h-screen flex items-center justify-center p-6"
+            >
+              <div className="bg-stone-900/80 border border-amber-600/30 rounded-2xl p-8 backdrop-blur-sm max-w-md w-full mx-4">
+                <div className="text-center mb-8">
+                  <motion.h1 
+                    className="text-4xl font-cinzel text-amber-300 mb-2"
+                    initial={{ scale: 0.9 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    🔑 Esqueci Senha
+                  </motion.h1>
+                  <p className="text-amber-200">Digite seu email ou usuário para redefinir sua senha</p>
+                </div>
+
+                {error && (
+                  <div className="mb-4 p-3 bg-red-900/50 border border-red-600 rounded-lg text-red-300">
+                    {error}
+                  </div>
+                )}
+
+                {successMessage && (
+                  <div className="mb-4 p-3 bg-green-900/50 border border-green-600 rounded-lg text-green-300">
+                    {successMessage}
+                  </div>
+                )}
+
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div>
+                    <label className="block text-amber-200 mb-2 font-semibold">Email ou Usuário</label>
+                    <input
+                      type="text"
+                      value={forgotPasswordForm.emailOrNickname}
+                      onChange={(e) => setForgotPasswordForm(prev => ({ ...prev, emailOrNickname: e.target.value }))}
+                      className="w-full px-4 py-3 bg-stone-800/90 border border-amber-600/40 rounded-xl text-white placeholder-stone-400 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/20 transition-all"
+                      placeholder="seu@email.com ou username"
+                      required
+                    />
+                  </div>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 disabled:opacity-50"
+                  >
+                    {isLoading ? 'Enviando...' : 'Enviar Link de Redefinição'}
+                  </motion.button>
+                  
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentView('login')}
+                      className="text-amber-400 hover:text-amber-300 underline transition-colors"
+                    >
+                      Voltar ao Login
+                    </button>
+                  </div>
+                </form>
+
+                <div className="mt-6 p-4 bg-stone-800/40 border border-blue-600/30 rounded-xl text-blue-200">
+                  <h4 className="font-bold text-blue-300 mb-2">📧 Como funciona?</h4>
+                  <div className="text-sm space-y-1">
+                    <div>1. Digite seu email ou usuário</div>
+                    <div>2. Receba o link por email</div>
+                    <div>3. Clique no link para redefinir</div>
+                    <div className="text-xs text-stone-400 mt-2">O link expira em 1 hora</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {currentView === 'select' && user && (
             <motion.div
               key="select"
@@ -342,7 +465,7 @@ export default function HomePage() {
                 onBack={() => setCurrentView('login')}
                 onCreateNew={() => setCurrentView('character')}
                 onSelectCharacter={(character) => {
-                  // TODO: Implementar seleção de personagem
+
                 }}
                 user={user}
               />

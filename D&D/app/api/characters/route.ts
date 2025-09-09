@@ -44,7 +44,6 @@ const characterSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar autenticação
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -65,10 +64,8 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     
-    // Validar dados de entrada
     const validatedData = characterSchema.parse(body);
     
-    // Verificar se usuário existe
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     });
@@ -80,7 +77,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se já existe personagem com esse nome para o usuário
     const existingCharacter = await prisma.character.findFirst({
       where: {
         userId: decoded.userId,
@@ -95,18 +91,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar informações da classe para calcular pontos de vida
     const characterClass = await prisma.characterClass.findUnique({
       where: { id: validatedData.classe }
     });
 
-    // Calcular pontos de vida baseado na classe e constituição
     const constitutionBonus = Math.floor((validatedData.constituicao - 10) / 2);
-    const hitDie = characterClass?.dado_vida || 8; // d8 padrão se não encontrar
+    const hitDie = characterClass?.dado_vida || 8;
     const baseHP = hitDie + constitutionBonus;
-    const maxHP = Math.max(1, baseHP); // Mínimo 1 HP
+    const maxHP = Math.max(1, baseHP);
 
-    // Criar personagem
     const character = await prisma.character.create({
       data: {
         userId: decoded.userId,
@@ -142,7 +135,6 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Verificar autenticação
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -161,13 +153,11 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Buscar personagens do usuário
     const characters = await prisma.character.findMany({
       where: { userId: decoded.userId },
       orderBy: { createdAt: 'desc' },
     });
 
-    // Para cada personagem, buscar informações da raça e classe
     const charactersWithDetails = await Promise.all(
       characters.map(async (character) => {
         const [race, characterClass] = await Promise.all([

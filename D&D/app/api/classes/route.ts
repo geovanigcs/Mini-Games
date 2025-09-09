@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
       orderBy: { nome: 'asc' },
     });
 
-    // Parse JSON strings back to arrays
+
     const classesWithParsedData = classes.map((characterClass: any) => ({
       ...characterClass,
       habilidades_iniciais: JSON.parse(characterClass.habilidades_iniciais || '[]'),
