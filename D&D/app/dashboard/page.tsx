@@ -113,7 +113,7 @@ export default function DashboardPage() {
         <FloatingParticles />
         <div className="text-center text-white z-10">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="text-lg">Carregando dashboard...</p>
+          <p className="text-lg">Carregando Sala de Personagens...</p>
         </div>
       </div>
     )
@@ -164,7 +164,7 @@ export default function DashboardPage() {
           {/* Title */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-amber-400 mb-2">
-              ⚔️ Dashboard de Heróis
+              ⚔️ Salão de Personagens
             </h1>
             <p className="text-slate-300">
               Gerencie seus personagens e embarque em aventuras épicas
