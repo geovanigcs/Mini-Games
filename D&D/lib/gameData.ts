@@ -1,8 +1,31 @@
 // 🏔️ Middle Earth RPG - Game Data
 
-import { CharacterRace, CharacterClass } from '@/types'
+import { Race, CharacterClass } from '@/types'
 
-export const RACES: CharacterRace[] = [
+// Temporary interface for game data - to be migrated to database
+interface GameRace {
+  id: string
+  name: string
+  description: string
+  attributeBonus: Record<string, number>
+  specialAbilities: string[]
+  emoji: string
+}
+
+interface GameClass {
+  id: string
+  name: string
+  description: string
+  primaryAttributes?: string[]
+  primaryAttribute?: string
+  startingHealth?: number
+  startingMana?: number
+  startingSkills?: string[]
+  iconName?: string
+  emoji: string
+}
+
+export const RACES: GameRace[] = [
   {
     id: 'human',
     name: 'Human',
@@ -53,12 +76,12 @@ export const RACES: CharacterRace[] = [
   }
 ]
 
-export const CLASSES: CharacterClass[] = [
+export const CLASSES: GameClass[] = [
   {
     id: 'warrior',
     name: 'Warrior',
     description: 'Masters of melee combat, warriors charge into battle with sword and shield. They are the stalwart defenders and frontline fighters.',
-    primaryAttribute: 'strength',
+    primaryAttributes: ['strength'],
     startingSkills: ['Sword Mastery', 'Shield Defense', 'Battle Charge'],
     emoji: '⚔️',
     iconName: 'Sword'
@@ -67,7 +90,7 @@ export const CLASSES: CharacterClass[] = [
     id: 'mage',
     name: 'Mage',
     description: 'Wielders of ancient arcane knowledge, mages command the very forces of creation and destruction. Their spells can turn the tide of battle.',
-    primaryAttribute: 'intelligence',
+    primaryAttributes: ['intelligence'],
     startingSkills: ['Fireball', 'Magic Shield', 'Arcane Missile'],
     emoji: '🔮',
     iconName: 'Wand2'

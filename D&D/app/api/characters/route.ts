@@ -5,6 +5,10 @@ import { z } from 'zod';
 
 const characterSchema = z.object({
   nome: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
+  titulo: z.string().optional(),
+  pseudonimo: z.string().optional(),
+  familia: z.string().optional(),
+  avatar_url: z.string().optional(),
   apelido: z.string().optional(),
   raca: z.string().min(1, 'Raça é obrigatória'),
   classe: z.string().min(1, 'Classe é obrigatória'),
@@ -77,16 +81,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingCharacter = await prisma.character.findFirst({
-      where: {
-        userId: decoded.userId,
-        nome: validatedData.nome,
-      }
-    });
+    // Verificar duplicações de nome, título e pseudônimo globalmente (não apenas para o usuário)
+    const duplicateChecks = [];
+    
+    if (validatedData.nome) {
+      const existingByName = await prisma.character.findFirst({
+        where: { nome: validatedData.nome }
+      });
+      if (existingByName) duplicateChecks.push('nome');
+    }
+    
+    if (validatedData.titulo && validatedData.titulo.trim()) {
+      const existingByTitle = await prisma.character.findFirst({
+        where: { titulo: validatedData.titulo }
+      });
+      if (existingByTitle) duplicateChecks.push('título');
+    }
+    
+    if (validatedData.pseudonimo && validatedData.pseudonimo.trim()) {
+      const existingByNickname = await prisma.character.findFirst({
+        where: { pseudonimo: validatedData.pseudonimo }
+      });
+      if (existingByNickname) duplicateChecks.push('pseudônimo');
+    }
 
-    if (existingCharacter) {
+    if (duplicateChecks.length > 0) {
       return NextResponse.json(
-        { error: 'Você já possui um personagem com este nome' },
+        { 
+          error: `Já existe um personagem com esse ${duplicateChecks.join(' e ')}. Por favor, escolha outro(s).`,
+          duplicateFields: duplicateChecks
+        },
         { status: 400 }
       );
     }
@@ -95,26 +119,36 @@ export async function POST(request: NextRequest) {
       where: { id: validatedData.classe }
     });
 
+    console.log('🎯 Dados validados:', JSON.stringify(validatedData, null, 2));
+
     const constitutionBonus = Math.floor((validatedData.constituicao - 10) / 2);
     const hitDie = characterClass?.dado_vida || 8;
     const baseHP = hitDie + constitutionBonus;
     const maxHP = Math.max(1, baseHP);
 
+    console.log('💖 HP calculado:', { baseHP, maxHP, constitutionBonus, hitDie });
+
+    const createData = {
+      userId: decoded.userId,
+      ...validatedData,
+      pontos_vida_atuais: maxHP,
+      pontos_vida_maximos: maxHP,
+      dinheiro_cobre: 100, // Dinheiro inicial
+      dinheiro_prata: 10,
+      dinheiro_ouro: 1,
+    };
+
+    console.log('📦 Dados para criação:', JSON.stringify(createData, null, 2));
+
     const character = await prisma.character.create({
-      data: {
-        userId: decoded.userId,
-        ...validatedData,
-        pontos_vida_atuais: maxHP,
-        pontos_vida_maximos: maxHP,
-        dinheiro_cobre: 100, // Dinheiro inicial
-        dinheiro_prata: 10,
-        dinheiro_ouro: 1,
-      },
+      data: createData,
     });
 
     return NextResponse.json({
       message: '🎭 Personagem criado com sucesso! Que comece a aventura!',
       character,
+      id: character.id,
+      nome: character.nome
     });
 
   } catch (error) {
@@ -135,6 +169,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🔍 GET /api/characters - Listando personagens do usuário');
+    
+    // Verificar autenticação
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -143,47 +180,52 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const token = authHeader.substring(7);
-    const decoded = verifyToken(token);
+    const token = authHeader.split(' ')[1];
+    let decoded: any;
     
-    if (!decoded) {
+    try {
+      const jwt = require('jsonwebtoken');
+      const JWT_SECRET = process.env.JWT_SECRET || 'seu_jwt_secret_aqui';
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (error) {
       return NextResponse.json(
         { error: 'Token inválido' },
         { status: 401 }
       );
     }
 
+    const userId = decoded.userId;
+    console.log(`👤 Usuário autenticado: ${userId}`);
+
+    // Buscar personagens do usuário
     const characters = await prisma.character.findMany({
-      where: { userId: decoded.userId },
-      orderBy: { createdAt: 'desc' },
+      where: {
+        userId: userId
+      },
+      select: {
+        id: true,
+        nome: true,
+        titulo: true,
+        pseudonimo: true,
+        classe: true,
+        raca: true,
+        nivel: true,
+        pontos_vida_atuais: true,
+        pontos_vida_maximos: true,
+        avatar_url: true,
+        createdAt: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
     });
 
-    const charactersWithDetails = await Promise.all(
-      characters.map(async (character) => {
-        const [race, characterClass] = await Promise.all([
-          prisma.race.findUnique({
-            where: { id: character.raca }
-          }),
-          prisma.characterClass.findUnique({
-            where: { id: character.classe }
-          })
-        ]);
+    console.log(`📋 Encontrados ${characters.length} personagens para o usuário`);
 
-        return {
-          ...character,
-          Race: race,
-          CharacterClass: characterClass,
-        };
-      })
-    );
-
-    return NextResponse.json({
-      characters: charactersWithDetails,
-      count: charactersWithDetails.length
-    });
+    return NextResponse.json(characters);
 
   } catch (error) {
-    console.error('Erro ao buscar personagens:', error);
+    console.error('❌ Erro ao buscar personagens:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

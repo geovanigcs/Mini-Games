@@ -160,7 +160,7 @@ export default function AdventureIntro({ onStartJourney }: AdventureIntroProps) 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="mt-12"
+          className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
           <motion.button
             onClick={onStartJourney}
@@ -173,6 +173,8 @@ export default function AdventureIntro({ onStartJourney }: AdventureIntroProps) 
           >
             ⚔️ Iniciar Jornada
           </motion.button>
+          
+
         </motion.div>
 
         {/* Epic quote */}

@@ -1,123 +1,172 @@
+// =============================================================================
+// USER TYPES
+// =============================================================================
 export interface User {
   id: string
-  username: string
+  nome: string
+  nickname: string
   email: string
-  createdAt: string
-  isActive: boolean
-}
-
-export interface Character {
-  id: string
-  userId: string
-  name: string
-  race: CharacterRace
-  class: CharacterClass
-  level: number
-  experience: number
-  attributes: CharacterAttributes
-  inventory: InventoryItem[]
-  location: string
+  nivel_usuario: number
+  experiencia_total: number
+  conquistas?: string
+  preferencias?: string
+  ultimo_login?: string
   createdAt: string
   updatedAt: string
 }
 
-export interface CharacterAttributes {
-  strength: number
-  agility: number
-  intelligence: number
-  wisdom: number
-  luck: number
-  resistance: number
+// =============================================================================
+// CHARACTER TYPES
+// =============================================================================
+export interface Character {
+  id: string
+  userId: string
+  nome: string
+  titulo?: string
+  pseudonimo?: string
+  familia?: string
+  apelido?: string
+  raca: string
+  classe: string
+  
+  // Atributos básicos
+  forca: number
+  destreza: number
+  constituicao: number
+  inteligencia: number
+  sabedoria: number
+  carisma: number
+  
+  // Características físicas
+  idade: number
+  altura: number
+  peso: number
+  corOlhos: string
+  corCabelo: string
+  corPele: string
+  estilo: string
+  
+  // História e personalidade
+  alinhamento: string
+  origem: string
+  motivacao: string
+  traumas?: string
+  inimigos?: string
+  segredo?: string
+  personalidade?: string
+  tracos?: string
+  ideais?: string
+  vinculos?: string
+  defeitos?: string
+  
+  // Sistema de jogo
+  nivel: number
+  experiencia: number
+  pontos_vida_atuais: number
+  pontos_vida_maximos: number
+  
+  // Inventário e equipamentos
+  dinheiro_cobre: number
+  dinheiro_prata: number
+  dinheiro_ouro: number
+  armas?: string
+  armadura?: string
+  itensEspeciais?: string
+  
+  // Habilidades e conhecimentos
+  proficiencias?: string
+  magias?: string
+  poderes?: string
+  idiomas?: string
+  conhecimentos?: string
+  
+  // Meta
+  avatar_url?: string
+  imagem_url?: string
+  createdAt: string
+  updatedAt: string
 }
 
-export interface CharacterRace {
-  id: 'human' | 'elf' | 'dwarf' | 'halfling' | 'orc' | 'ent'
-  name: string
-  description: string
-  attributeBonus: Partial<CharacterAttributes>
-  specialAbilities: string[]
+// =============================================================================
+// GAME DATA TYPES
+// =============================================================================
+export interface Race {
+  id: string
+  nome: string
+  descricao: string
   emoji: string
+  habilidades_especiais: string
+  altura_media_cm: number
+  peso_medio_kg: number
+  expectativa_vida: number
+  bonus_forca: number
+  bonus_destreza: number
+  bonus_constituicao: number
+  bonus_inteligencia: number
+  bonus_sabedoria: number
+  bonus_carisma: number
+  criado_em: string
+  atualizado_em: string
 }
 
 export interface CharacterClass {
-  id: 'warrior' | 'mage' | 'ranger' | 'paladin' | 'rogue' | 'necromancer'
-  name: string
-  description: string
-  primaryAttribute: keyof CharacterAttributes
-  startingSkills: string[]
-  emoji: string
-  iconName: string
-}
-
-export interface InventoryItem {
   id: string
-  name: string
-  type: 'weapon' | 'armor' | 'consumable' | 'quest' | 'treasure'
-  rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
-  description: string
-  quantity: number
-  value: number
+  nome: string
+  descricao: string
   emoji: string
+  icone_nome: string
+  atributo_principal: string
+  dado_vida: number
+  habilidades_iniciais: string
+  tipo_armadura?: string
+  armas_permitidas?: string
+  escolas_magia?: string
+  criado_em: string
+  atualizado_em: string
 }
 
-export interface GameLocation {
+export interface Skill {
   id: string
-  name: string
-  description: string
-  type: 'town' | 'dungeon' | 'wilderness' | 'castle' | 'ruins'
-  level: number
-  connectedLocations: string[]
-  npcs: NPC[]
-  monsters: Monster[]
+  nome: string
+  descricao: string
   emoji: string
+  categoria: string
+  atributo_base: string
+  tipo: string
+  criado_em: string
+  atualizado_em: string
 }
 
-export interface NPC {
+// =============================================================================
+// CHARACTER SKILL TYPES  
+// =============================================================================
+export interface CharacterSkill {
   id: string
-  name: string
-  type: 'merchant' | 'questgiver' | 'guard' | 'citizen'
-  dialogue: string[]
-  quests?: Quest[]
-  items?: InventoryItem[]
-  emoji: string
+  characterId: string
+  skillId: string
+  maestria: number
+  experiencia: number
+  criado_em: string
+  atualizado_em: string
+  skill?: Skill
 }
 
-export interface Monster {
-  id: string
-  name: string
-  level: number
-  attributes: CharacterAttributes
-  health: number
-  loot: InventoryItem[]
-  experience: number
-  emoji: string
-}
-
-export interface Quest {
-  id: string
-  title: string
-  description: string
-  type: 'main' | 'side' | 'daily'
-  difficulty: 'easy' | 'medium' | 'hard' | 'nightmare'
-  rewards: {
-    experience: number
-    gold: number
-    items: InventoryItem[]
-  }
-  requirements?: {
-    level?: number
-    completedQuests?: string[]
-    items?: string[]
-  }
-  status: 'available' | 'active' | 'completed' | 'failed'
-}
-
-// API Response Types
-export interface ApiResponse<T> {
+// =============================================================================
+// API RESPONSE TYPES
+// =============================================================================
+export interface ApiResponse<T = any> {
   success: boolean
   data?: T
+  error?: string
   message?: string
-  errors?: string[]
+}
+
+// =============================================================================
+// UTILITY TYPES
+// =============================================================================
+export type WithTimestamps<T> = T & {
+  criado_em: string
+  atualizado_em: string
 }
 
 export interface LoginRequest {

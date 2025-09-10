@@ -18,7 +18,8 @@ export async function GET(request: NextRequest) {
         inteligencia: race.bonus_inteligencia,
         sabedoria: race.bonus_sabedoria,
         carisma: race.bonus_carisma,
-      }
+      },
+      emoji: race.emoji
     }));
 
     return NextResponse.json(racesWithParsedData);
