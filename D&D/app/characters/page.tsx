@@ -98,15 +98,6 @@ export default function CharactersPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-900 via-orange-900 to-red-900 p-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-amber-200 mb-2">
-            🏰 Meus Personagens
-          </h1>
-          <p className="text-amber-300 text-lg">
-            Gerencie e visualize seus heróis da Terra Média
-          </p>
-        </div>
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-4 mb-8">

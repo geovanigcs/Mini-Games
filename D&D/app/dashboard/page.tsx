@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Plus, Users, LogOut, User } from 'lucide-react'
+import { ArrowLeft, Plus, LogOut, User } from 'lucide-react'
 import FloatingParticles from '@/components/FloatingParticles'
 
-// Mapeamento de emojis para raças e classes
 const raceEmojis: { [key: string]: string } = {
   'Humano': '👤',
   'Elfo': '🧝',
@@ -123,7 +122,6 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
       <FloatingParticles />
       
-      {/* Header */}
       <div className="relative z-10 p-6">
         <div className="flex items-center justify-between">
           <motion.button
@@ -154,14 +152,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="relative z-10 px-6 pb-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-6xl mx-auto"
         >
-          {/* Title */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-amber-400 mb-2">
               ⚔️ Salão de Personagens
@@ -171,7 +167,6 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -182,23 +177,12 @@ export default function DashboardPage() {
             </motion.div>
           )}
 
-          {/* Action Buttons */}
           <motion.div
-            className="mb-8 flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="mb-8 flex justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <motion.button
-              onClick={() => router.push('/characters')}
-              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Users size={20} />
-              <span>🏰 Meus Personagens</span>
-            </motion.button>
-            
             <motion.button
               onClick={handleCreateCharacter}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white font-semibold rounded-lg hover:from-amber-700 hover:to-amber-800 transition-all"
@@ -210,7 +194,6 @@ export default function DashboardPage() {
             </motion.button>
           </motion.div>
 
-          {/* Characters Grid */}
           {characters.length > 0 ? (
             <motion.div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
