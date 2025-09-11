@@ -1,7 +1,6 @@
 {
   "/character/[id]/page": "app/character/[id]/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/api/characters/route": "app/api/characters/route.js",
-  "/api/skills/route": "app/api/skills/route.js",
-  "/api/character-skills/route": "app/api/character-skills/route.js"
+  "/api/characters/simple/route": "app/api/characters/simple/route.js",
+  "/page": "app/page.js"
 }
