@@ -64,6 +64,40 @@ export default function DashboardPage() {
       localStorage.removeItem('user')
       router.push('/auth')
     }
+
+    // Background music setup - The Misty Mountains Cold
+    const audio = new Audio('/audio/The Misty Mountains Cold.mp3')
+    audio.loop = true
+    audio.volume = 0.2 // Volume baixo para ambientação
+    
+    // Tentar reproduzir automaticamente
+    const playAudio = async () => {
+      try {
+        await audio.play()
+      } catch (error) {
+        // Se não conseguir reproduzir automaticamente, aguardar interação do usuário
+        const handleUserInteraction = async () => {
+          try {
+            await audio.play()
+            document.removeEventListener('click', handleUserInteraction)
+            document.removeEventListener('keydown', handleUserInteraction)
+          } catch (err) {
+            console.log('Não foi possível reproduzir o áudio')
+          }
+        }
+        
+        document.addEventListener('click', handleUserInteraction)
+        document.addEventListener('keydown', handleUserInteraction)
+      }
+    }
+
+    playAudio()
+
+    // Cleanup: parar o áudio quando sair da página
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+    }
   }, [router])
 
   const fetchCharacters = async (token: string) => {

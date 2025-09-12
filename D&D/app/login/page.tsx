@@ -3,8 +3,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { Eye, EyeOff, ArrowLeft, Play } from 'lucide-react'
 import FloatingParticles from '@/components/FloatingParticles'
+import { useMusic } from '@/contexts/MusicContext'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -13,6 +14,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+
+  const { state, dispatch } = useMusic()
 
   const [loginForm, setLoginForm] = useState({
     emailOrNickname: '',
@@ -132,9 +135,25 @@ export default function LoginPage() {
     }
   }
 
+  const startMusic = () => {
+    if (!state.isPlaying) {
+      dispatch({ type: 'PLAY' })
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
       <FloatingParticles />
+      
+      {!state.isPlaying && (
+        <button
+          onClick={startMusic}
+          className="absolute top-4 right-4 z-20 p-3 rounded-full bg-slate-800/80 border border-amber-600/30 text-amber-200 hover:bg-amber-600/20 hover:text-amber-100 transition-all duration-300 flex items-center gap-2"
+        >
+          <Play className="w-5 h-5" />
+          <span className="text-sm">Iniciar Música</span>
+        </button>
+      )}
       
       {/* Back Button */}
       <motion.button
@@ -323,7 +342,7 @@ export default function LoginPage() {
                       type="email"
                       value={registerForm.email}
                       onChange={(e) => setRegisterForm(prev => ({ ...prev, email: e.target.value }))}
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:border-amber-500 focus:ring-1 focus:ring-1 focus:ring-amber-500"
+                      className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                       placeholder="Digite seu email"
                       required
                     />

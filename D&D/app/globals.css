@@ -84,6 +84,39 @@
     box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
   }
 
+  /* Volume Slider Styles */
+  .slider {
+    background: linear-gradient(to right, #d4af37 0%, #d4af37 var(--value, 60%), #57534e var(--value, 60%), #57534e 100%);
+    outline: none;
+    transition: background 0.3s;
+  }
+
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #d4af37;
+    cursor: pointer;
+    border: 2px solid #0d1117;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .slider::-webkit-slider-thumb:hover {
+    background: #ca8a04;
+    transform: scale(1.1);
+  }
+
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #d4af37;
+    cursor: pointer;
+    border: 2px solid #0d1117;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
   .epic-button {
     background: linear-gradient(135deg, #ca8a04 0%, #d4af37 100%);
     color: #0d1117;

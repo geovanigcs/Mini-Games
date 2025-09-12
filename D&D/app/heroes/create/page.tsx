@@ -65,6 +65,40 @@ export default function CreateCharacterPage() {
     }
 
     fetchGameData()
+
+    // Background music setup
+    const audio = new Audio('/audio/The First Town.mp3')
+    audio.loop = true
+    audio.volume = 0.25 // Volume baixo para não atrapalhar a criação
+    
+    // Tentar reproduzir automaticamente
+    const playAudio = async () => {
+      try {
+        await audio.play()
+      } catch (error) {
+        // Se não conseguir reproduzir automaticamente, aguardar interação do usuário
+        const handleUserInteraction = async () => {
+          try {
+            await audio.play()
+            document.removeEventListener('click', handleUserInteraction)
+            document.removeEventListener('keydown', handleUserInteraction)
+          } catch (err) {
+            console.log('Não foi possível reproduzir o áudio')
+          }
+        }
+        
+        document.addEventListener('click', handleUserInteraction)
+        document.addEventListener('keydown', handleUserInteraction)
+      }
+    }
+
+    playAudio()
+
+    // Cleanup: parar o áudio quando sair da página
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+    }
   }, [router])
 
   const fetchGameData = async () => {
